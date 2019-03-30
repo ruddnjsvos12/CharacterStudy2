@@ -41,7 +41,7 @@ public class AnimationController : MonoBehaviour
 
     void AnimationEnd()
     {
-        Debug.Log("AnimatonEnd");
+        //Debug.Log("AnimatonEnd");
 
         if(null != _endEvent)
         {

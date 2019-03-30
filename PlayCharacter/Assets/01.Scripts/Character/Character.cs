@@ -10,6 +10,8 @@ public class Character : MonoBehaviour
 
     [SerializeField] AnimationController _animationController;
     [SerializeField] List<GameObject> _wayPointList;
+
+    int _meetCount = 0;
     private void Awake()
     {
         _characterController = gameObject.GetComponent<CharacterController>();
@@ -26,6 +28,7 @@ public class Character : MonoBehaviour
         _stateDic.Add(eState.WALK, new WalkState());
         _stateDic.Add(eState.PATROL, new PatrolState());
         _stateDic.Add(eState.WAIT2, new Wait2State());
+        _stateDic.Add(eState.DEATH, new DeathState());
 
 
         for (int i = 0; i < _stateDic.Count; i++)
@@ -41,18 +44,39 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateState();
-        UpDateMove();
-
+        if(eState.DEATH!= _stateType)
+        {
+            UpdateState();
+            UpDateMove();
+            UpdateDeath();
+        }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("OnTriggerEnter");
+        if (other.gameObject.Equals(gameObject))
+            return;
+
+        _meetCount++;
+        if (3 <= _meetCount)
+        {
+            ChangeState(eState.DEATH);
+            return;
+        }
+        //_lifeTime = 0.0f;
+
+        //Debug.Log("OnTriggerEnter");
         if(eState.WALK == _stateType)
         {
             ChangeState(eState.KICK);
         }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.Equals(gameObject))
+            return;
+        _meetCount--;
     }
 
     //상태(State)
@@ -70,6 +94,7 @@ public class Character : MonoBehaviour
         WALK,
         PATROL,
         WAIT2,
+        DEATH,
     }
 
     eState _stateType = eState.IDLE;
@@ -182,7 +207,23 @@ public class Character : MonoBehaviour
                                                       180.0f * Time.deltaTime);
 
         return direction;
-        
+
+    }
+
+    //Death
+    float _deathTime = 12.0f;
+    float _lifeTime = 0.0f;
+
+    void UpdateDeath()
+    {
+        /*
+        if(_deathTime <= _lifeTime)
+        {
+            ChangeState(eState.DEATH);
+           
+        }
+
+        _lifeTime += Time.deltaTime;*/
     }
 
 }

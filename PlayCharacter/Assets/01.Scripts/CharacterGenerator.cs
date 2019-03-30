@@ -11,7 +11,7 @@ public class CharacterGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Generate();
+        //Generate();
         StartCoroutine(ExecGenerate());
     }
 

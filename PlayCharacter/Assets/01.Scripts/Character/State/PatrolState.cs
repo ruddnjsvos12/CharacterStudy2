@@ -5,6 +5,7 @@ using UnityEngine;
 public class PatrolState : State
 {
     Vector3 _prevWayPoint = Vector3.zero;
+   
     //int _curIndex = 0;
 
     override public void Start()
@@ -14,7 +15,12 @@ public class PatrolState : State
         //_curIndex = (_curIndex + 1) % _character.GetWayPointCount(); 
         //Vector3 wayPoint = _character.GetWayPoint(_curIndex);
 
+        _prevWayPoint = _character.transform.position;
+        _prevWayPoint.y = 0.0f;
+        //Vector3 wayPoint = _character.GetRandomWayPoint();
         Vector3 wayPoint = _character.GetRandomWayPoint();
+
+
 
         if (wayPoint.Equals(_prevWayPoint))
         {
