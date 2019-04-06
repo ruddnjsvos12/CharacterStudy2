@@ -11,18 +11,37 @@ public class Character : MonoBehaviour
     [SerializeField] AnimationController _animationController;
     [SerializeField] List<GameObject> _wayPointList;
 
+    [SerializeField] bool _isPlayer = false;
+
     int _meetCount = 0;
     private void Awake()
     {
         _characterController = gameObject.GetComponent<CharacterController>();
+
+        //자동화
+        {
+            if( 0 < transform.childCount)
+            {
+                Transform childTransform = transform.GetChild(0);
+                childTransform.gameObject.AddComponent<AnimationController>();
+                _animationController = childTransform.gameObject.GetComponent<AnimationController>();
+            }
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        if(true == _isPlayer)
+        {
+            _stateDic.Add(eState.IDLE, new PlayerIdleState());
+        }
+        else
+        {
+            _stateDic.Add(eState.IDLE, new IdleState());
+        }
 
-
-        _stateDic.Add(eState.IDLE, new IdleState());
+        //_stateDic.Add(eState.IDLE, new IdleState());
         _stateDic.Add(eState.WAIT, new WaitState());
         _stateDic.Add(eState.KICK, new KickState());
         _stateDic.Add(eState.WALK, new WalkState());
@@ -46,6 +65,27 @@ public class Character : MonoBehaviour
     {
         if(eState.DEATH!= _stateType)
         {
+            //Input 처리
+            if(true == _isPlayer)
+            {
+                if (true == Input.GetMouseButtonUp(0)) // 유니티에서 마우스 입력 처리 방식
+                {
+                    Vector2 clickPos = Input.mousePosition;
+                    //클릭한 화면 좌표와 대응되는 월드 좌표 알아내야함.
+                    //RayCast 사용
+
+                    Ray ray = Camera.main.ScreenPointToRay(clickPos);
+                    RaycastHit hitInfo;
+                    if(true == Physics.Raycast(ray, out hitInfo, 100.0f, 1 << LayerMask.NameToLayer("Ground")))
+                    {
+                        Vector3 destPos = hitInfo.point;
+                        Debug.Log("WorldPos : " + destPos);
+                        SetDestination(destPos);
+                        ChangeState(Character.eState.WALK);
+                    }
+         
+                }
+            }
             UpdateState();
             UpDateMove();
             UpdateDeath();
