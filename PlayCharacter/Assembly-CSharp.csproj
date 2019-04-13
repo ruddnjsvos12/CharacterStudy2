@@ -62,6 +62,9 @@
   <ItemGroup>
     <Compile Include="Assets\01.Scripts\AnimationController.cs" />
     <Compile Include="Assets\01.Scripts\Character\Character.cs" />
+    <Compile Include="Assets\01.Scripts\Character\CharacterModule.cs" />
+    <Compile Include="Assets\01.Scripts\Character\NPCModule.cs" />
+    <Compile Include="Assets\01.Scripts\Character\PlayerModule.cs" />
     <Compile Include="Assets\01.Scripts\Character\State\DeathState.cs" />
     <Compile Include="Assets\01.Scripts\Character\State\IdleState.cs" />
     <Compile Include="Assets\01.Scripts\Character\State\KickState.cs" />

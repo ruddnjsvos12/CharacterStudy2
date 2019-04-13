@@ -7,24 +7,71 @@ public class Character : MonoBehaviour
 {
 
     // 캐릭터컨트롤러를 _animator에 세팅 
+    [SerializeField] List<GameObject> _charPrefabList;
 
-    [SerializeField] AnimationController _animationController;
+    [SerializeField] RuntimeAnimatorController _animatorController;
     [SerializeField] List<GameObject> _wayPointList;
 
+    /*
     [SerializeField] bool _isPlayer = false;
 
+    PlayerModule _playerModule = null;
+    NPCModule _npcModule = null;
+    */
+    enum CharType
+    {
+        Player,
+        NPC
+    }
+    [SerializeField] CharType _charType = CharType.NPC;
+
+    List<CharacterModule> _charModuleList = new List<CharacterModule>();
+    CharacterModule _characterModule = null;
+
+    AnimationController _animationController;
+
     int _meetCount = 0;
+
     private void Awake()
     {
+        //플레이어 모듈을 생성
+        _charModuleList.Add(new PlayerModule(this));
+        _charModuleList.Add(new NPCModule(this));
+
         _characterController = gameObject.GetComponent<CharacterController>();
 
+        int index = 0;
+       
         //자동화
         {
-            if( 0 < transform.childCount)
+
+            //★ 이 부분 조건문 없애보기
+            if (CharType.Player == _charType)
+            {
+                index = 0;
+            }
+            else
+            {
+                index = 1;
+            }
+            
+            // 프리팹 생성 및 각종 수치 초기화
+
+            GameObject obj = GameObject.Instantiate<GameObject>(_charPrefabList[index]);
+            obj.transform.position = transform.position;
+            obj.transform.rotation = Quaternion.identity;
+            obj.transform.localScale = Vector3.one;
+
+            obj.transform.SetParent(transform);
+
+            if ( 0 < transform.childCount)
             {
                 Transform childTransform = transform.GetChild(0);
                 childTransform.gameObject.AddComponent<AnimationController>();
                 _animationController = childTransform.gameObject.GetComponent<AnimationController>();
+
+                Animator animCom = childTransform.gameObject.GetComponent<Animator>();
+                animCom.runtimeAnimatorController = _animatorController;
             }
         }
     }
@@ -32,32 +79,8 @@ public class Character : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(true == _isPlayer)
-        {
-            _stateDic.Add(eState.IDLE, new PlayerIdleState());
-        }
-        else
-        {
-            _stateDic.Add(eState.IDLE, new IdleState());
-        }
-
-        //_stateDic.Add(eState.IDLE, new IdleState());
-        _stateDic.Add(eState.WAIT, new WaitState());
-        _stateDic.Add(eState.KICK, new KickState());
-        _stateDic.Add(eState.WALK, new WalkState());
-        _stateDic.Add(eState.PATROL, new PatrolState());
-        _stateDic.Add(eState.WAIT2, new Wait2State());
-        _stateDic.Add(eState.DEATH, new DeathState());
-
-
-        for (int i = 0; i < _stateDic.Count; i++)
-        {
-            eState state = (eState)i;
-            _stateDic[state].SetCharacter(this);
-        }
-
-        //최초 상태
-        ChangeState(eState.IDLE);
+        _characterModule = _charModuleList[(int)_charType];
+        _characterModule.BuildStateList();
     }
 
     // Update is called once per frame
@@ -65,30 +88,12 @@ public class Character : MonoBehaviour
     {
         if(eState.DEATH!= _stateType)
         {
-            //Input 처리
-            if(true == _isPlayer)
-            {
-                if (true == Input.GetMouseButtonUp(0)) // 유니티에서 마우스 입력 처리 방식
-                {
-                    Vector2 clickPos = Input.mousePosition;
-                    //클릭한 화면 좌표와 대응되는 월드 좌표 알아내야함.
-                    //RayCast 사용
+            _characterModule.UpdateAI();
 
-                    Ray ray = Camera.main.ScreenPointToRay(clickPos);
-                    RaycastHit hitInfo;
-                    if(true == Physics.Raycast(ray, out hitInfo, 100.0f, 1 << LayerMask.NameToLayer("Ground")))
-                    {
-                        Vector3 destPos = hitInfo.point;
-                        Debug.Log("WorldPos : " + destPos);
-                        SetDestination(destPos);
-                        ChangeState(Character.eState.WALK);
-                    }
-         
-                }
-            }
             UpdateState();
             UpDateMove();
             UpdateDeath();
+            
         }
     }
 
@@ -97,12 +102,14 @@ public class Character : MonoBehaviour
         if (other.gameObject.Equals(gameObject))
             return;
 
-        _meetCount++;
+
+        //_meetCount++;
+        /*
         if (3 <= _meetCount)
         {
             ChangeState(eState.DEATH);
             return;
-        }
+        }*/
         //_lifeTime = 0.0f;
 
         //Debug.Log("OnTriggerEnter");
@@ -125,6 +132,10 @@ public class Character : MonoBehaviour
 
     State _state = null;
 
+    public Dictionary<eState, State> GetStateDic()
+    {
+        return _stateDic;
+    }
 
     public enum eState
     {
@@ -256,14 +267,14 @@ public class Character : MonoBehaviour
 
     void UpdateDeath()
     {
-        /*
-        if(_deathTime <= _lifeTime)
+        
+        if(_deathTime <= _lifeTime && _charType == CharType.NPC)
         {
             ChangeState(eState.DEATH);
            
         }
 
-        _lifeTime += Time.deltaTime;*/
+        _lifeTime += Time.deltaTime;
     }
 
 }

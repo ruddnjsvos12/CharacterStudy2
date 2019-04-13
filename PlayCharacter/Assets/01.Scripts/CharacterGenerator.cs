@@ -26,9 +26,8 @@ public class CharacterGenerator : MonoBehaviour
 
     void Generate()
     {
-        //이 네줄은 그냥 외우기
         GameObject obj = GameObject.Instantiate<GameObject>(_characterPrefab);
-        obj.transform.position = Vector3.zero;
+        obj.transform.position = transform.position;
         obj.transform.rotation = Quaternion.identity;
         obj.transform.localScale = Vector3.one;
 
