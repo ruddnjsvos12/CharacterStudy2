@@ -755,6 +755,11 @@ PrefabInstance:
       propertyPath: _charType
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6527453509189932459, guid: a13dfa5f60863c743a49ad4a247708a3,
+        type: 3}
+      propertyPath: _charPrefabList.Array.data[1]
+      value: 
+      objectReference: {fileID: 100056, guid: fa5dcd72fcc122042b2b1b852b967d76, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a13dfa5f60863c743a49ad4a247708a3, type: 3}
 --- !u!1 &1853251446

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+// fetch 체크용
 public class Character : MonoBehaviour
 {
 

@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _charPrefabList:
   - {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
-  - {fileID: 100008, guid: d6dad0fb52ba12f458cc7ffb66882391, type: 3}
+  - {fileID: 100056, guid: fa5dcd72fcc122042b2b1b852b967d76, type: 3}
   _animatorController: {fileID: 9100000, guid: 8707014c2e1117747a5563d92f122301, type: 2}
   _wayPointList:
   - {fileID: 0}
@@ -56,7 +56,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  _isPlayer: 0
+  _charType: 1
 --- !u!143 &6527453509189932460
 CharacterController:
   m_ObjectHideFlags: 0
