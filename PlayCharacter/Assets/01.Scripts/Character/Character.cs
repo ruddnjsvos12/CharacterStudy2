@@ -46,6 +46,8 @@ public class Character : MonoBehaviour
         {
 
             //★ 이 부분 조건문 없애보기
+
+            /*
             if (CharType.Player == _charType)
             {
                 index = 0;
@@ -53,11 +55,12 @@ public class Character : MonoBehaviour
             else
             {
                 index = 1;
-            }
+            }*/
             
             // 프리팹 생성 및 각종 수치 초기화
 
-            GameObject obj = GameObject.Instantiate<GameObject>(_charPrefabList[index]);
+           
+            GameObject obj = GameObject.Instantiate<GameObject>(_charPrefabList[(int)_charType]);
             obj.transform.position = transform.position;
             obj.transform.rotation = Quaternion.identity;
             obj.transform.localScale = Vector3.one;
